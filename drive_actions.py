@@ -8,7 +8,7 @@ def perform_action(action):
         "reverse": "S",
         "steer_left": "A",
         "steer_right": "D",
-        "handbrake": "Space",  # Replace 'Space' with the actual key used for handbrake if known
+        "handbrake": "Space",
         "reset": "R"
     }
 
@@ -16,7 +16,7 @@ def perform_action(action):
     if key is not None:
         keyboard.press(key)
         # Optionally, you can add a small delay to simulate key press duration
-        time.sleep(0.1)
+        time.sleep(0.2)
         # Release the key after a short delay
         keyboard.release(key)
     else:
