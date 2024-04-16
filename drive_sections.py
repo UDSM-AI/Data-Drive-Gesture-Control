@@ -46,16 +46,21 @@ def track_hand():
                 # Draw a circle at the palm position
                 cv2.circle(frame, (palm_x, palm_y), 10, (0, 255, 0), -1)
 
-                # Check if the palm is in the left hand region
+                # Draw hand landmarks for the left hand
                 if palm_x < width // 2:
-                    cv2.putText(frame, "Left Hand", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                    mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS,
+                                               mp_drawing.DrawingSpec(color=(0,255,0), thickness=2, circle_radius=2),
+                                               mp_drawing.DrawingSpec(color=(255,0,0), thickness=2, circle_radius=2))
+                    cv2.putText(frame, "Left Hand", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                     # Perform action for left hand (e.g., steer left)
                     perform_action("steer_left")
-                # Check if the palm is in the right hand region
+                # Draw hand landmarks for the right hand
                 else:
-                    cv2.putText(frame, "Right Hand", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                    mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS,
+                                               mp_drawing.DrawingSpec(color=(0,255,0), thickness=2, circle_radius=2),
+                                               mp_drawing.DrawingSpec(color=(255,0,0), thickness=2, circle_radius=2))
+                    cv2.putText(frame, "Right Hand", (width - 200, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                     # Perform action for right hand (e.g., steer right)
-                    perform_action("steer_right")
 
         # Draw the regions for left and right hands on the frame
         cv2.rectangle(frame, (left_hand_region[0], left_hand_region[1]), (left_hand_region[0] + left_hand_region[2], left_hand_region[1] + left_hand_region[3]), (255, 0, 0), 2)
