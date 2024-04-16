@@ -1,7 +1,7 @@
 import cv2
 import mediapipe as mp
 import numpy as np
-from drive_actions import perform_action
+from drive_actions import perform_action, release_accelerate_keys, release_steering_keys, release_forward_keys, release_reverse_keys, release_left_keys, release_right_keys
 
 def is_hand_open(hand_landmarks):
     # Calculate the distance between thumb and index finger landmarks
@@ -27,6 +27,22 @@ def is_middle_finger_touching_thumb(hand_landmarks):
     thumb_tip = hand_landmarks.landmark[mp.solutions.hands.HandLandmark.THUMB_TIP]
     middle_tip = hand_landmarks.landmark[mp.solutions.hands.HandLandmark.MIDDLE_FINGER_TIP]
     distance = np.sqrt((thumb_tip.x - middle_tip.x) ** 2 + (thumb_tip.y - middle_tip.y) ** 2)
+    # Define a threshold
+    threshold = 0.1
+    return distance < threshold
+
+def is_ring_finger_touching_thumb(hand_landmarks):
+    thumb_tip = hand_landmarks.landmark[mp.solutions.hands.HandLandmark.THUMB_TIP]
+    ring_tip = hand_landmarks.landmark[mp.solutions.hands.HandLandmark.RING_FINGER_TIP]
+    distance = np.sqrt((thumb_tip.x - ring_tip.x) ** 2 + (thumb_tip.y - ring_tip.y) ** 2)
+    # Define a threshold
+    threshold = 0.1
+    return distance < threshold
+
+def is_pinky_finger_touching_thumb(hand_landmarks):
+    thumb_tip = hand_landmarks.landmark[mp.solutions.hands.HandLandmark.THUMB_TIP]
+    pinky_tip = hand_landmarks.landmark[mp.solutions.hands.HandLandmark.PINKY_TIP]
+    distance = np.sqrt((thumb_tip.x - pinky_tip.x) ** 2 + (thumb_tip.y - pinky_tip.y) ** 2)
     # Define a threshold
     threshold = 0.1
     return distance < threshold
@@ -82,15 +98,27 @@ def track_hand():
                 palm_y = int(palm_landmark.y * height)
                 # Check if the palm is in the left hand region
                 if palm_x < width // 2:
-                    # Check if the left hand is open or closed
-                    if is_hand_open(hand_landmarks):
-                        cv2.putText(frame, "Left Hand: Open", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-                        print("Left Hand: Open")
+                    # Check if the top of the index finger is touching the thumb
+                    if is_index_finger_touching_thumb(hand_landmarks):
+                        cv2.putText(frame, "Accelerate", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                        print("Accelerate")
+                        release_reverse_keys()
                         perform_action("accelerate")
-                    else:
-                        cv2.putText(frame, "Left Hand: Closed", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-                        print("Left Hand: Closed")
+                    # Check if the top of the middle finger is touching the thumb
+                    elif is_middle_finger_touching_thumb(hand_landmarks):
+                        cv2.putText(frame, "Brake", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                        print("Brake")
+                        release_forward_keys()
                         perform_action("brake")
+                    #check if the top of the ring finger is touching the thumb
+                    elif is_ring_finger_touching_thumb(hand_landmarks):
+                        cv2.putText(frame, "Reverse", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                        print("Reverse")
+                        release_accelerate_keys()
+                        perform_action("reverse")
+                    else:
+                        cv2.putText(frame, "No Action Detected", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                        release_accelerate_keys()
 
                 # Check if the palm is in the right hand region
                 else:
@@ -99,14 +127,22 @@ def track_hand():
                     if is_index_finger_touching_thumb(hand_landmarks):
                         cv2.putText(frame, "Steering Left", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                         print("Steering Left")
+                        release_right_keys()
                         perform_action("steer_left")
                     # Check if the top of the middle finger is touching the thumb
                     elif is_middle_finger_touching_thumb(hand_landmarks):
                         cv2.putText(frame, "Steering Right", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                         print("Steering Right")
+                        release_left_keys()
                         perform_action("steer_right")
+                    # Check if the top of the ring finger is touching the thumb
+                    elif is_ring_finger_touching_thumb(hand_landmarks):
+                        cv2.putText(frame, "Neutralize", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                        print("Neutralize")
+                        release_steering_keys()
                     else:
                         cv2.putText(frame, "No Action Detected", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                        release_steering_keys()
 
 
             # Overlay the mask on the original frame
