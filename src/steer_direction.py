@@ -152,7 +152,7 @@ def track_hand():
         cv2.rectangle(frame, (left_hand_region[0], left_hand_region[1]), (left_hand_region[0] + left_hand_region[2], left_hand_region[1] + left_hand_region[3]), (255, 0, 0), 2)
         cv2.rectangle(frame, (right_hand_region[0], right_hand_region[1]), (right_hand_region[0] + right_hand_region[2], right_hand_region[1] + right_hand_region[3]), (255, 0, 0), 2)
 
-        cv2.imshow('Hand Landmarks', frame)
+        cv2.imshow('Data Drive', frame)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
