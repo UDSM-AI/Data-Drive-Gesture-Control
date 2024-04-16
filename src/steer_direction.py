@@ -1,7 +1,7 @@
 import cv2
 import mediapipe as mp
 import numpy as np
-from drive_actions import perform_action, release_accelerate_keys, release_steering_keys, release_forward_keys, release_reverse_keys, release_left_keys, release_right_keys
+from src.drive_actions import perform_action, release_accelerate_keys, release_steering_keys, release_forward_keys, release_reverse_keys, release_left_keys, release_right_keys
 
 def is_hand_open(hand_landmarks):
     # Calculate the distance between thumb and index finger landmarks
