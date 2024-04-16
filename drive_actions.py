@@ -3,21 +3,19 @@ import time
 
 def perform_action(action):
     _driving_actions = {
-        "accelerate": "W",
+        "accelerate": "w",
         "brake": "Space",
-        "reverse": "S",
-        "steer_left": "A",
-        "steer_right": "D",
+        "reverse": "s",
+        "steer_left": "a",
+        "steer_right": "d",
         "handbrake": "Space",
-        "reset": "R"
+        "reset": "r"
     }
 
-    key = _driving_actions.get(action)
-    if key is not None:
-        keyboard.press(key)
-        # Optionally, you can add a small delay to simulate key press duration
-        time.sleep(0.2)
-        # Release the key after a short delay
-        keyboard.release(key)
-    else:
-        print("Unknown action")
+    # key = _driving_actions.get(action)
+    # if key is not None:
+    #     keyboard.press(key)
+    #     time.sleep(0.2)
+    #     keyboard.release(key)
+    # else:
+    #     print("Unknown action")

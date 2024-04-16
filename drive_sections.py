@@ -3,7 +3,6 @@ import mediapipe as mp
 import math
 from drive_actions import perform_action
 
-
 def track_hand():
     # Initialize MediaPipe Hand module
     mp_hands = mp.solutions.hands
@@ -17,15 +16,17 @@ def track_hand():
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-    # Define the regions for left, center, and right
-    left_region = (0, 0, width // 3, height)
-    center_region = (width // 3, 0, width // 3, height)
-    right_region = (2 * width // 3, 0, width // 3, height)
+    # Define the regions for left and right hands
+    left_hand_region = (0, 0, width // 2, height)
+    right_hand_region = (width // 2, 0, width // 2, height)
 
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
             break
+
+        # Flip the frame horizontally
+        frame = cv2.flip(frame, 1)
 
         # Convert BGR image to RGB
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -45,26 +46,20 @@ def track_hand():
                 # Draw a circle at the palm position
                 cv2.circle(frame, (palm_x, palm_y), 10, (0, 255, 0), -1)
 
-                # Check if the palm is in the left region
-                if palm_x < left_region[2]:
-                    cv2.putText(frame, "Steer Left", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-                    # Perform action for steering left
-                    # perform_action("steer_left")
-                # Check if the palm is in the center region
-                elif left_region[2] <= palm_x < right_region[0]:
-                    cv2.putText(frame, "Relax", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-                    # Perform action for relaxing
-                    # perform_action("relax")
-                # Check if the palm is in the right region
-                elif palm_x >= right_region[0]:
-                    cv2.putText(frame, "Steer Right", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-                    # Perform action for steering right
-                    # perform_action("steer_right")
+                # Check if the palm is in the left hand region
+                if palm_x < width // 2:
+                    cv2.putText(frame, "Left Hand", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                    # Perform action for left hand (e.g., steer left)
+                    perform_action("steer_left")
+                # Check if the palm is in the right hand region
+                else:
+                    cv2.putText(frame, "Right Hand", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                    # Perform action for right hand (e.g., steer right)
+                    perform_action("steer_right")
 
-        # Draw the regions on the frame
-        cv2.rectangle(frame, (left_region[0], left_region[1]), (left_region[0] + left_region[2], left_region[1] + left_region[3]), (255, 0, 0), 2)
-        cv2.rectangle(frame, (center_region[0], center_region[1]), (center_region[0] + center_region[2], center_region[1] + center_region[3]), (255, 0, 0), 2)
-        cv2.rectangle(frame, (right_region[0], right_region[1]), (right_region[0] + right_region[2], right_region[1] + right_region[3]), (255, 0, 0), 2)
+        # Draw the regions for left and right hands on the frame
+        cv2.rectangle(frame, (left_hand_region[0], left_hand_region[1]), (left_hand_region[0] + left_hand_region[2], left_hand_region[1] + left_hand_region[3]), (255, 0, 0), 2)
+        cv2.rectangle(frame, (right_hand_region[0], right_hand_region[1]), (right_hand_region[0] + right_hand_region[2], right_hand_region[1] + right_hand_region[3]), (255, 0, 0), 2)
 
         cv2.imshow('Hand Tracking', frame)
 
