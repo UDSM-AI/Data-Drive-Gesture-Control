@@ -34,7 +34,7 @@ import webbrowser
 from src.steer_direction import track_hand
 
 # Open the web page in the default web browser
-webbrowser.open("http://slowroads.io")
+# webbrowser.open("http://slowroads.io")
 
 # Launch the hand tracking
 track_hand()
