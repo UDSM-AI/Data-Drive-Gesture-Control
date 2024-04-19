@@ -80,11 +80,11 @@ def draw_hand_regions(frame: np.ndarray, left_hand_region: tuple, right_hand_reg
         color = (255, 155, 20)
 
     cv2.rectangle(frame, (left_hand_region[0], left_hand_region[1]),
-                  (left_hand_region[0] + left_hand_region[2], left_hand_region[1] + left_hand_region[3]),
-                  color, 2)
+                (left_hand_region[0] + left_hand_region[2], left_hand_region[1] + left_hand_region[3]),
+                color, 2)
     cv2.rectangle(frame, (right_hand_region[0], right_hand_region[1]),
-                  (right_hand_region[0] + right_hand_region[2], right_hand_region[1] + right_hand_region[3]),
-                  color, 2)
+                (right_hand_region[0] + right_hand_region[2], right_hand_region[1] + right_hand_region[3]),
+                color, 2)
 
 
 def detect_hand_action(hand_landmarks: Any, frame: np.ndarray, width: int, height: int) -> None:
